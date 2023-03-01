@@ -2,6 +2,7 @@ const tabs = await chrome.tabs.query({
   url: [
     "https://developer.chrome.com/docs/webstore/*",
     "https://developer.chrome.com/docs/extensions/*",
+    "https://developers.google.com/youtube/*",
   ],
 });
 
@@ -31,6 +32,13 @@ const button = document.querySelector("button");
 button.addEventListener("click", async () => {
   const tabIds = tabs.map(({ id }) => id);
   const group = await chrome.tabs.group({ tabIds });
-  await chrome.tabGroups.update(group, { title: "DOCS" });
+  await chrome.tabGroups.update(group, { title: "GOOGLE DOCS", "color": "green" });
 });
+
+const removeButton = document.getElementsByClassName("remove")[0];
+removeButton.addEventListener("click", async () => {
+  const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
+  const groupTabs = await chrome.tabs.query({groupId: tab.groupId});
+  await chrome.tabs.ungroup(groupTabs.map(t => t.id));
+})
 
